@@ -1,0 +1,61 @@
+# COMANDOS MANUALES
+# PostgreSQL + Adminer
+
+# 1) Volumen
+
+docker volume create postgres_data
+
+# 2) Red
+
+docker network create red_bd
+
+# 3) PostgreSQL
+
+docker run -d --name postgres_c --network red_bd \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=utec \
+  -e POSTGRES_DB=ejercicio_postgres \
+  -p 8006:5432 \
+  -v postgres_data:/var/lib/postgresql/data \
+  postgres:17
+
+# 4) Verificar PostgreSQL
+
+docker ps
+
+docker logs postgres_c
+
+# 5) Adminer
+
+docker run -d --name adminer_postgres_c --network red_bd \
+  -e ADMINER_DEFAULT_SERVER=postgres_c \
+  -p 8081:8080 \
+  adminer:6.0.1-standalone
+
+# 6) Verificar Adminer
+
+docker ps
+
+docker logs adminer_postgres_c
+
+# 7) Abrir en navegador
+# http://localhost:8081
+# En una VM/cloud: http://IP_PUBLICA:8081
+
+# 8) Acceso en Adminer
+# Sistema: PostgreSQL
+# Servidor: postgres_c
+# Usuario: postgres
+# Contraseña: utec
+# Base de datos: ejercicio_postgres
+
+# 9) Entrar a psql
+
+docker exec -it postgres_c psql -U postgres -d ejercicio_postgres
+
+# 10) En psql
+SELECT version();
+\dt
+
+# 11) Salir
+\q

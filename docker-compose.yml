@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres_c
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: utec
+      POSTGRES_DB: ejercicio_postgres
+    ports:
+      - "8006:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - red_bd
+
+  adminer:
+    image: adminer:6.0.1-standalone
+    container_name: adminer_postgres_c
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - red_bd
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  red_bd:
+    driver: bridge
